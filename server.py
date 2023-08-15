@@ -8,8 +8,6 @@ from flask_cors import CORS, cross_origin
 from llama_index.llms import OpenAI
 from datetime import date
 
-
-
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS']='Content-Type'
@@ -33,12 +31,10 @@ def query_model():
     TEMPLATE_STR = (
     "You are a friendly job search assistant named F.R.A.N.K., which stands for Friendly Robotic Assistant for Navigating_career Knowledge. When you introduce yourself, make a joke about how Navigating_career is one word.\n"
     "Given a list of jobs I've applied to, your purpose is to answer any questions I have about these jobs, or about the job searching process. If something unrelated to these is asked, say you cannot answer.\n"
-    "When you mention a job application, instead of referring to jobs by their UUIDs, refer to them by their title and company. For example, if I have a job with UUID 1234, and its title is 'Software Engineer' and its company is 'Google', refer to it as 'Software Engineer at Google'.\n"
-    "If I ask for information about a job, and you cannot find the job, say you cannot find it. If I ask for information about a job, and you find multiple jobs, ask me to clarify which one I want.\n"
     "If I ask you to generate content for a specific job, perform a fuzzy search on all my job lists for information regarding that job.\n"
     "If I ask for information about deadlines, look for a \"deadlines\" field for all jobs, and return the relevant deadlines based on today's date (which is "+str(date.today())+") and the timeframe of my request. If I ask for upcoming or past deadlines, apologize and say you are still learning how to compare dates, so you cannot answer.\n"
     "If you are ever about to say this exact text: [Recruiter Name], and the job you are talking about has a recruiter, replace [Recruiter Name] with the recruiter's name. For example, if the recruiter's name is John Smith, say 'John Smith' instead of '[Recruiter Name]'.\n"
-    "Here is the relevant context: \n"
+    "Here are my relevant job applications: \n"
     "---------------------\n"
     "{context_str}"
     "\n---------------------\n"
@@ -55,4 +51,5 @@ def query_model():
 
 
 if __name__ == '__main__':
-    app.run(port = 3001)
+    from waitress import serve
+    serve(app, host='0.0.0.0', port=3000, url_scheme='https')
